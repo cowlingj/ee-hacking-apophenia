@@ -12,6 +12,7 @@ jobs:
     name: "Test"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: devcontainers/ci@v0.3
         with:
           push: never
