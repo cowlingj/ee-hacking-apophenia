@@ -14,5 +14,8 @@
         "GitHub.vscode-github-actions"
       ]
     }
+  },
+  "features": {
+    "./test-feature": {}
   }
 }

@@ -1,0 +1,9 @@
+{
+    // https://containers.dev/implementors/features/
+    "id": "test-feature",
+    "version": "0.0.1",
+    "name": "Test Feature",
+    "containerEnv": {
+        "TEST": "true"
+    }
+}
