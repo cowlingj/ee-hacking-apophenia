@@ -7,5 +7,12 @@
   "containerUser": "node",
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/node/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/home/node/workspace",
-  "runArgs": ["--userns=keep-id"]
+  "runArgs": ["--userns=keep-id"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.vscode-github-actions"
+      ]
+    }
+  }
 }
