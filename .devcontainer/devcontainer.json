@@ -1,0 +1,12 @@
+{
+	"name": "Equal Experts Apophenia",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"remoteUser": "node",
+	"containerUser": "node",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/node/workspace,type=bind,consistency=cached",
+	"workspaceFolder": "/home/node/workspace",
+    "updateRemoteUserUID": true,
+	"runArgs": ["--userns=keep-id"]
+}

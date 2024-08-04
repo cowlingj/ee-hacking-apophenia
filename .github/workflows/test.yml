@@ -1,0 +1,22 @@
+---
+name: CI (branch)
+
+on:
+  push:
+    branches: ["!main"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: "Test"
+    uses: devcontainers/ci@v0.3
+    with:
+      push: never
+      runCmd: |
+        for app in . ; do
+          pushd $app
+            npm run test
+          popd
+        done
