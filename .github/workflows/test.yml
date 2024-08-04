@@ -17,6 +17,7 @@ jobs:
         with:
           push: never
           runCmd: pwd
+          skipContainerUserIdUpdate: true
           # runCmd: |
           #   for app in . ; do
           #     pushd $app

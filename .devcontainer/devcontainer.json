@@ -6,5 +6,6 @@
   "remoteUser": "node",
   "containerUser": "node",
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/node/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/home/node/workspace"
+  "workspaceFolder": "/home/node/workspace",
+  "runArgs": ["--userns=keep-id"]
 }
