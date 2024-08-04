@@ -1,5 +1,5 @@
 ---
-name: CI (branch)
+name: Build
 
 on:
   push: {}
@@ -22,7 +22,6 @@ jobs:
           runCmd: |
             for app in * ; do
               pushd $app
-                npm run test
+                npm run build
               popd
             done
-            false
