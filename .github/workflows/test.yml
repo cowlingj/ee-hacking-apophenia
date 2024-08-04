@@ -13,11 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: jq del(.runArgs) .devcontainer/devcontainer.json > /tmp/devcontainer.json
+
       - uses: devcontainers/ci@v0.3
         with:
-          push: never
           runCmd: pwd
-          skipContainerUserIdUpdate: true
+          configFile: /tmp/devcontainer.json
           # runCmd: |
           #   for app in . ; do
           #     pushd $app
