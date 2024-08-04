@@ -10,12 +10,14 @@ permissions:
 jobs:
   test:
     name: "Test"
-    uses: devcontainers/ci@latest
-    with:
-      push: never
-      runCmd: |
-        for app in . ; do
-          pushd $app
-            npm run test
-          popd
-        done
+    runs-on: ubuntu-latest
+    steps:
+      - uses: devcontainers/ci@latest
+        with:
+          push: never
+          runCmd: |
+            for app in . ; do
+              pushd $app
+                npm run test
+              popd
+            done
