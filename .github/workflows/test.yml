@@ -10,7 +10,7 @@ permissions:
 jobs:
   test:
     name: "Test"
-    uses: devcontainers/ci@v0.3
+    uses: devcontainers/ci@latest
     with:
       push: never
       runCmd: |
