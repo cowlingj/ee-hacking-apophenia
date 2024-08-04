@@ -19,7 +19,6 @@ jobs:
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: pwd
-          configFile: /tmp/devcontainer.json
           # runCmd: |
           #   for app in . ; do
           #     pushd $app
