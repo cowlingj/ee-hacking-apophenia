@@ -21,7 +21,7 @@ jobs:
         with:
           push: never
           runCmd: |
-            for app in * ; do
+            for app in */ ; do
               pushd $app
                 npm install
                 npm run build
