@@ -25,3 +25,4 @@ jobs:
                 npm run test
               popd
             done
+            false
