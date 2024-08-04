@@ -13,13 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
+      - name: transform devcontainer config
+        run: |
           jq 'del(.runArgs)' .devcontainer/devcontainer.json > /tmp/devcontainer.json
           mv /tmp/devcontainer.json .devcontainer/devcontainer.json
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: |
-            for app in . ; do
+            for app in * ; do
               pushd $app
                 npm run test
               popd
