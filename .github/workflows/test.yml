@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: jq 'del(.runArgs)' .devcontainer/devcontainer.json > /tmp/devcontainer.json
-
+      - run: |
+          jq 'del(.runArgs)' .devcontainer/devcontainer.json > /tmp/devcontainer.json
+          mv /tmp/devcontainer.json .devcontainer/devcontainer.json
       - uses: devcontainers/ci@v0.3
         with:
           runCmd: pwd
