@@ -2,8 +2,7 @@
 name: CI (branch)
 
 on:
-  push:
-    branches: ["!main"]
+  push: {}
 
 permissions:
   contents: write
