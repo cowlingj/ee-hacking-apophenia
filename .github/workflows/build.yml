@@ -23,7 +23,7 @@ jobs:
           runCmd: |
             for app in */ ; do
               pushd $app
-                npm install
+                npm clean-install
                 npm run build
               popd
             done
