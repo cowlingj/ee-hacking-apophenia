@@ -11,8 +11,12 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "GitHub.vscode-github-actions"
+        "GitHub.vscode-github-actions",
+        "ms-azuretools.vscode-docker"
       ]
     }
+  },
+  "features": {
+    "./features/vercel": {}
   }
 }
