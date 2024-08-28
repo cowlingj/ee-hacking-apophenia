@@ -1,18 +1,15 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React, { useEffect, useState } from 'react'
+import { Button } from "@/components/ui/button"
 import './App.css'
 
 const images = import.meta.glob(['./assets/images/*.jpg'])
 
-
-function RandomImage({ index }) {
+function ImageAsset({ imageKey }) {
   const [src, setSrc] = useState(null);
 
   useEffect(() => {
-    Object.values(images)[Math.floor(Math.random() * Object.keys(images).length)]()
-      .then((module) => setSrc(module.default))
-  }, [setSrc, index]);
+    images[imageKey]().then((module) => setSrc(module.default))
+  }, [setSrc, imageKey]);
 
   if (src === null) {
     return <p>loading...</p>
@@ -21,19 +18,43 @@ function RandomImage({ index }) {
   return <img src={src} />
 };
 
+function NumberButton({ n, setCount, children, max = 5, ...rest }) {
+  return <Button onClick={() => {setCount(n ?? Math.ceil(Math.random() * max))}} {...rest}>
+    {children !== undefined ? children : `generate ${n} image${n !== 1 ? "s" : ""}`}
+  </Button>
+}
+
+// Fisher-Yates shuffle
+// https://www.freecodecamp.org/news/how-to-shuffle-an-array-of-items-using-javascript-or-typescript/
+function shuffle(array) {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) { 
+    const j = Math.floor(Math.random() * (i + 1)); 
+    [copy[i], copy[j]] = [copy[j], copy[i]]; 
+  } 
+  return copy; 
+}
+
 function App() {
-  const [count, setCount] = useState(0)
-  const [index, setIndex] = useState(null)
+  const [count, setCount] = useState(0);
+  const [imageKeys, setImageKeys] = useState([]);
+
+  useEffect(() => {
+    setImageKeys(shuffle(Object.keys(images)).slice(0, count) )
+  }, [count, setImageKeys]);
 
   return (
     <>
-      <button
-        onClick={() => {setIndex(Math.floor(Math.random() * Object.keys(images).length))}}
-      >
-        Random image
-      </button>
+      <NumberButton n={1} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
+      <NumberButton n={2} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
+      <NumberButton n={3} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
+      <NumberButton n={4} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
+      <NumberButton n={5} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
+      <NumberButton setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} >
+        Generate a random number of images
+      </NumberButton>
       <br />
-      {index && <RandomImage index={index} />}
+      { imageKeys.map(i => <ImageAsset key={i} imageKey={i} />) }
     </>
   )
 }
