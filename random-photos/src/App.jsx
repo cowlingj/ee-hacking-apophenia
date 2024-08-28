@@ -20,7 +20,7 @@ function ImageAsset({ imageKey }) {
 
 function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   return <Button onClick={() => {setCount(n ?? Math.ceil(Math.random() * max))}} {...rest}>
-    {children !== undefined ? children : `generate ${n} image${n !== 1 ? "s" : ""}`}
+    { children }
   </Button>
 }
 
@@ -42,19 +42,27 @@ function App() {
   useEffect(() => {
     setImageKeys(shuffle(Object.keys(images)).slice(0, count) )
   }, [count, setImageKeys]);
+let title = null
+
+if ( count === 0 ){
+  title = <h1>How many random images would you like?</h1>
+}
 
   return (
     <>
-      <NumberButton n={1} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
-      <NumberButton n={2} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
-      <NumberButton n={3} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
-      <NumberButton n={4} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
-      <NumberButton n={5} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} />
-      <NumberButton setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} >
-        Generate a random number of images
-      </NumberButton>
+      { title }
+      { count === 0 ? <NumberButton n={1} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}}>One</NumberButton> : null }
+      { count === 0 ? <NumberButton n={2} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}}>Two</NumberButton> : null }
+      { count === 0 ? <NumberButton n={3} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}}>Three</NumberButton> : null }
+      { count === 0 ? <NumberButton n={4} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}}>Four</NumberButton> : null }
+      { count === 0 ? <NumberButton n={5} setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}}>Five</NumberButton> : null }
+      { count === 0 ? <NumberButton setCount={(i) => { setCount(i); setImageKeys(shuffle(Object.keys(images)).slice(0, i))}} >
+        Surprise me!
+      </NumberButton> : null }
       <br />
       { imageKeys.map(i => <ImageAsset key={i} imageKey={i} />) }
+      { count !== 0 ? <NumberButton n={0} setCount={(i) => { setCount(i); setImageKeys([])}} >Play Again</NumberButton> : null }
+      
     </>
   )
 }
