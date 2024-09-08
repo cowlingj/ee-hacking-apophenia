@@ -5,12 +5,18 @@ import './App.css'
 import { CategoriesProvider, useCategories } from './CategoriesContext'
 import { UserPreferences } from './UserPreferences'
 
+const SHUFFLE_SPEED=200
+
 function CategoryTitles() {
   const { categories, renameCategory } = useCategories();
 
   return categories.map((category, i) =>
       <input value={category.name} key={`category ${i} name`} aria-label={`category ${i + 1} name`} onChange={(e) => renameCategory(i, e.target?.value)} />
   );
+}
+
+function nonEmptyValueIndicies(categories) {
+  return categories.map(category => category.values.map((value, i) => [value, i]).filter(([v]) => v).map(([_, i]) => i));
 }
 
 function Categories() {
@@ -21,37 +27,49 @@ function Categories() {
   const [ interval, setInterval ] = useState();
 
   const handler = () => {
-    if (interval) { // FIXME: interval clearing race condition
-      setTimeout(() => {
+    if (interval) {
+        // call set choice once more after so the result is random and can't be timed
+        setChoice(
+          nonEmptyValueIndicies(categories).map(values => values[Math.floor(Math.random() * values.length)])
+      )
         window.clearInterval(interval)
         setInterval(undefined);
-      }, Math.random() * 2000 + 3000);
     } else {
       setInterval(window.setInterval(() => {
-        setChoice(categories.map(category => Math.floor(Math.random() * category.values.length)))
-      }, 500))
+        setChoice(
+          nonEmptyValueIndicies(categories).map(values => values[Math.floor(Math.random() * values.length)])
+        )
+      }, SHUFFLE_SPEED))
     }
   }
 
+  const allColumnsHaveValues = nonEmptyValueIndicies(categories).every(values => values.length > 0);
+
   return <>
-  <table>
-    <tbody>
-      {rows.map((row, i) => <tr key={`row-${i}`}>
-        {row.map((cell, j) => <td key={`cell-${j}`}>
-          <input
-            value={cell}
-            aria-label={`row ${i + 1}, column ${j + 1} value`}
-            onChange={(e) => renameValue(j, i, e.target?.value)}
-            style={ choice && choice[j] === i ? { backgroundColor: "red"} : undefined}
-          />
-        </td>)}
-        <td>
-          <button onClick={() => deleteRow(i)}>Delete</button>
-        </td>
-      </tr>)}
-    </tbody>
-  </table>
-  <button onClick={handler}>{interval ? "Stop" : "Shuffle"}</button>
+    <table>
+      <tbody>
+        {rows.map((row, i) => <tr key={`row-${i}`}>
+          {row.map((cell, j) => <td key={`cell-${j}`}>
+            <input
+              value={cell}
+              aria-label={`row ${i + 1}, column ${j + 1} value`}
+              onChange={(e) => renameValue(j, i, e.target?.value)}
+              style={ choice && choice[j] === i ? { backgroundColor: "red"} : undefined}
+            />
+          </td>)}
+          <td>
+            <button onClick={() => deleteRow(i)}>Delete</button>
+          </td>
+        </tr>)}
+      </tbody>
+    </table>
+    { allColumnsHaveValues ? null : <p>Column(s) cannot be empty</p>}
+    <button
+      disabled={!allColumnsHaveValues}
+      onClick={handler}
+    >
+      {interval ? "Stop" : "Shuffle"}
+    </button>
   </>
 }
 
