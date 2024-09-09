@@ -189,7 +189,7 @@ describe("add row", () => {
 });
 
 describe("delete row", () => {
-  it.each([0, 1])("removes row at index %d", (i) => {
+  it.each([0, 1, 2, 3])("removes row at index %d", (i) => {
     const { result } = renderHook(useCategories, {
       wrapper: CategoriesProvider,
     });
@@ -198,21 +198,29 @@ describe("delete row", () => {
       // setup by adding rows and renaming values
       result.current.addRow();
       result.current.addRow();
+      result.current.addRow();
+      result.current.addRow();
       result.current.renameValue(0, 0, "a");
       result.current.renameValue(1, 0, "b");
       result.current.renameValue(2, 0, "c");
       result.current.renameValue(0, 1, "d");
       result.current.renameValue(1, 1, "e");
       result.current.renameValue(2, 1, "f");
+      result.current.renameValue(0, 2, "g");
+      result.current.renameValue(1, 2, "h");
+      result.current.renameValue(2, 2, "i");
+      result.current.renameValue(0, 3, "j");
+      result.current.renameValue(1, 3, "k");
+      result.current.renameValue(2, 3, "l");
 
       // test
       result.current.deleteRow(i);
     });
 
     const expected = [
-      { name: "Category 1", values: ["a", "d"] },
-      { name: "Category 2", values: ["b", "e"] },
-      { name: "Category 3", values: ["c", "f"] },
+      { name: "Category 1", values: ["a", "d", "g", "j"] },
+      { name: "Category 2", values: ["b", "e", "h", "k"] },
+      { name: "Category 3", values: ["c", "f", "i", "l"] },
     ];
 
     expected.forEach(({ values }) => values.splice(i, 1));

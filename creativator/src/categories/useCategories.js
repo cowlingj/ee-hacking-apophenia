@@ -55,13 +55,13 @@ export function useCategories() {
       current.map((category) => ({
         name: category.name,
         values: [...category.values, ""],
-      })),
+      }))
     );
   };
 
   const deleteRow = (i) => {
     setCategories((current) => {
-      if (i >= current.length) {
+      if (i >= current[0].values.length) {
         return current;
       }
       return current.map((category) => {
