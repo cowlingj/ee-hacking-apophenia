@@ -27,9 +27,7 @@ export const CategoryContext = createContext({
  * @returns {UseCategoriesResult}
  */
 export function useCategories() {
-
   const { categories, setCategories } = useContext(CategoryContext);
-
 
   /**
    *
@@ -52,8 +50,6 @@ export function useCategories() {
     });
   };
 
-
-
   const addRow = () => {
     setCategories((current) =>
       current.map((category) => ({
@@ -62,7 +58,6 @@ export function useCategories() {
       })),
     );
   };
-
 
   const deleteRow = (i) => {
     setCategories((current) => {
@@ -76,15 +71,15 @@ export function useCategories() {
       });
     });
   };
-  
+
   const renameValue = (i, j, name) => {
     setCategories((current) => {
       if (i >= current.length || j >= current[i].values.length) {
         return current;
       }
       const categoriesCopy = [...current];
-      const values = [...(current[i].values)];
-      values.splice(j, 1, name ?? ""); 
+      const values = [...current[i].values];
+      values.splice(j, 1, name ?? "");
       categoriesCopy.splice(i, 1, {
         ...current[i],
         values: values,

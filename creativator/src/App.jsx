@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 import { CategoriesProvider } from "./categories/CategoriesContext";
 import { useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
@@ -109,6 +108,7 @@ function App() {
   return (
     <UserPreferences>
       <CategoriesProvider>
+        <h1>The Creativator</h1>
         <CategoryTitles />
         <Categories />
         <AddRowButton />

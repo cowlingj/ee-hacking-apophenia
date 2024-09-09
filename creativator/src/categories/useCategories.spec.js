@@ -31,7 +31,6 @@ it("Does nothing without context provider", () => {
       result.current.renameValue(0, 0, "Renamed");
     });
   }).not.toThrowError();
-
 });
 
 describe("renames categories", () => {
