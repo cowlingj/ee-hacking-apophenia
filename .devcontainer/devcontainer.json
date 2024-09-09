@@ -11,8 +11,18 @@
     "vscode": {
       "extensions": [
         "GitHub.vscode-github-actions",
-        "ms-azuretools.vscode-docker"
-      ]
+        "ms-azuretools.vscode-docker",
+        "vitest.explorer",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "vitest.nodeEnv": {
+          "NODE_ENV": "test"
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+      }
     }
   },
   "features": {
