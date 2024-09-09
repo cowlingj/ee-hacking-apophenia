@@ -2,20 +2,47 @@ import { useState } from "react";
 import { CategoriesProvider } from "./categories/CategoriesContext";
 import { useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
+import { Button } from "@/components/ui/button";
+import { Input } from "./components/ui/input";
 
 const SHUFFLE_SPEED = 200;
 
 function CategoryTitles() {
   const { categories, renameCategory } = useCategories();
 
-  return categories.map((category, i) => (
-    <input
-      value={category.name}
-      key={`category ${i} name`}
-      aria-label={`category ${i + 1} name`}
-      onChange={(e) => renameCategory(i, e.target?.value)}
-    />
-  ));
+  const [editMode, setEditMode] = useState(false);
+
+  const categoryElements = categories.map((category, i) =>
+    editMode ? (
+      <Input
+        value={category.name}
+        key={`category ${i} name`}
+        aria-label={`category ${i + 1} name`}
+        className={`col-start-${i + 1} row-start-2`}
+        onChange={(e) => renameCategory(i, e.target?.value)}
+      />
+    ) : (
+      <p
+        key={`category ${i} name`}
+        aria-label={`category ${i + 1} name`}
+        className={`col-start-${i + 1} row-start-2`}
+      >
+        {category.name}
+      </p>
+    )
+  );
+
+  categoryElements.push(
+    <Button
+      className="col-start-4 row-start-2"
+      key="edit-mode"
+      onClick={() => setEditMode((e) => !e)}
+    >
+      {editMode ? "Done" : "Edit Categories"}
+    </Button>
+  );
+
+  return categoryElements;
 }
 
 function nonEmptyValueIndicies(categories) {
@@ -23,14 +50,14 @@ function nonEmptyValueIndicies(categories) {
     category.values
       .map((value, i) => [value, i])
       .filter(([v]) => v)
-      .map(([, i]) => i),
+      .map(([, i]) => i)
   );
 }
 
 function Categories() {
   const { categories, renameValue, deleteRow } = useCategories();
   const rows = categories[0].values.map((_, i) =>
-    categories.map((category) => category.values[i]),
+    categories.map((category) => category.values[i])
   );
 
   const [choice, setChoice] = useState();
@@ -42,8 +69,8 @@ function Categories() {
       // we call setChoice once more when stopping so the result is random and can't be timed
       setChoice(
         nonEmptyValueIndicies(categories).map(
-          (values) => values[Math.floor(Math.random() * values.length)],
-        ),
+          (values) => values[Math.floor(Math.random() * values.length)]
+        )
       );
       window.clearInterval(interval);
       setInterval(undefined);
@@ -52,27 +79,27 @@ function Categories() {
         window.setInterval(() => {
           setChoice(
             nonEmptyValueIndicies(categories).map(
-              (values) => values[Math.floor(Math.random() * values.length)],
-            ),
+              (values) => values[Math.floor(Math.random() * values.length)]
+            )
           );
-        }, SHUFFLE_SPEED),
+        }, SHUFFLE_SPEED)
       );
     }
   };
 
   const allColumnsHaveValues = nonEmptyValueIndicies(categories).every(
-    (values) => values.length > 0,
+    (values) => values.length > 0
   );
 
   return (
     <>
-      <table>
-        <tbody>
+      <table className="grid grid-cols-subgrid col-span-4 my-auto h-full">
+        <tbody className="grid grid-cols-subgrid col-span-4 my-auto auto-rows-max overflow-x-hidden overflow-y-scroll h-full">
           {rows.map((row, i) => (
-            <tr key={`row-${i}`}>
+            <tr key={`row-${i}`} className="grid grid-cols-subgrid col-span-4">
               {row.map((cell, j) => (
                 <td key={`cell-${j}`}>
-                  <input
+                  <Input
                     value={cell}
                     aria-label={`row ${i + 1}, column ${j + 1} value`}
                     onChange={(e) => renameValue(j, i, e.target?.value)}
@@ -85,33 +112,37 @@ function Categories() {
                 </td>
               ))}
               <td>
-                <button onClick={() => deleteRow(i)}>Delete</button>
+                <Button onClick={() => deleteRow(i)}>Delete</Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {allColumnsHaveValues ? null : <p>Column(s) cannot be empty</p>}
-      <button disabled={!allColumnsHaveValues} onClick={handler}>
-        {interval ? "Stop" : "Shuffle"}
-      </button>
+      {allColumnsHaveValues ? null : (
+        <p className="col-span-4">Column(s) cannot be empty</p>
+      )}
+      <Button disabled={!allColumnsHaveValues} onClick={handler}>
+        {interval ? "Stop" : "Spin!"}
+      </Button>
     </>
   );
 }
 
 function AddRowButton() {
   const { addRow } = useCategories();
-  return <button onClick={addRow}>Add Row</button>;
+  return <Button onClick={addRow}>Add Row</Button>;
 }
 
 function App() {
   return (
     <UserPreferences>
       <CategoriesProvider>
-        <h1>The Creativator</h1>
-        <CategoryTitles />
-        <Categories />
-        <AddRowButton />
+        <main className="h-svh w-swh grid grid-cols-4 grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)_minmax(0,max-content)_minmax(16px,max-content)] gap-x-2 gap-y-4 p-2">
+          <h1 className="text-3xl font-bold pb-8">The Creativator</h1>
+          <CategoryTitles />
+          <Categories />
+          <AddRowButton />
+        </main>
       </CategoriesProvider>
     </UserPreferences>
   );
