@@ -103,10 +103,8 @@ function Categories() {
                     value={cell}
                     aria-label={`row ${i + 1}, column ${j + 1} value`}
                     onChange={(e) => renameValue(j, i, e.target?.value)}
-                    style={
-                      choice && choice[j] === i
-                        ? { backgroundColor: "red" }
-                        : undefined
+                    className={
+                      choice && choice[j] === i ? "bg-red-600 text-white" : null
                     }
                   />
                 </td>
@@ -119,11 +117,18 @@ function Categories() {
         </tbody>
       </table>
       {allColumnsHaveValues ? null : (
-        <p className="col-span-4">Column(s) cannot be empty</p>
+        <p className="col-span-4 text-center">Column(s) cannot be empty</p>
       )}
-      <Button disabled={!allColumnsHaveValues} onClick={handler}>
-        {interval ? "Stop" : "Spin!"}
-      </Button>
+      <div className="col-span-4 flex justify-around">
+        <AddRowButton />
+        <Button
+          disabled={!allColumnsHaveValues}
+          onClick={handler}
+          className={"bg-red-600"}
+        >
+          {interval ? "Stop" : "Spin!"}
+        </Button>
+      </div>
     </>
   );
 }
@@ -137,11 +142,10 @@ function App() {
   return (
     <UserPreferences>
       <CategoriesProvider>
-        <main className="h-svh w-swh grid grid-cols-4 grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)_minmax(0,max-content)_minmax(16px,max-content)] gap-x-2 gap-y-4 p-2">
+        <main className="h-svh w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_minmax(160px,max-content)] grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)] gap-x-4 gap-y-8 p-2">
           <h1 className="text-3xl font-bold pb-8">The Creativator</h1>
           <CategoryTitles />
           <Categories />
-          <AddRowButton />
         </main>
       </CategoriesProvider>
     </UserPreferences>
