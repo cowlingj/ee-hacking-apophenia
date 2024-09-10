@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CategoriesProvider } from "./categories/CategoriesContext";
 import { useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./components/ui/input";
 
 const SHUFFLE_SPEED = 200;
+const SHUFFLE_DURATION = 3000;
 
 function CategoryTitles() {
   const { categories, renameCategory } = useCategories();
@@ -61,30 +62,27 @@ function Categories() {
   );
 
   const [choice, setChoice] = useState();
-  // TODO: rename setInterval so I don't clash with window & btw test timers with https://vitest.dev/api/vi.html#vi-usefaketimers
-  const [interval, setInterval] = useState();
+  const [spinning, setSpinning] = useState(false);
 
-  const handler = () => {
-    if (interval) {
-      // we call setChoice once more when stopping so the result is random and can't be timed
+  useEffect(() => {
+    if (!spinning) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
       setChoice(
         nonEmptyValueIndicies(categories).map(
           (values) => values[Math.floor(Math.random() * values.length)]
         )
       );
-      window.clearInterval(interval);
-      setInterval(undefined);
-    } else {
-      setInterval(
-        window.setInterval(() => {
-          setChoice(
-            nonEmptyValueIndicies(categories).map(
-              (values) => values[Math.floor(Math.random() * values.length)]
-            )
-          );
-        }, SHUFFLE_SPEED)
-      );
-    }
+    }, SHUFFLE_SPEED);
+
+    return () => clearInterval(interval);
+  }, [categories, spinning]);
+
+  const handler = () => {
+    setSpinning(true);
+    setTimeout(() => setSpinning(false), SHUFFLE_DURATION);
   };
 
   const allColumnsHaveValues = nonEmptyValueIndicies(categories).every(
@@ -122,11 +120,11 @@ function Categories() {
       <div className="col-span-4 flex justify-around px-24 gap-4 lg:gap-48">
         <AddRowButton />
         <Button
-          disabled={!allColumnsHaveValues}
+          disabled={!allColumnsHaveValues || spinning}
           onClick={handler}
-          className={"bg-red-600 flex-1"}
+          className={"bg-red-600 hover:bg-red-500 flex-1"}
         >
-          {interval ? "Stop" : "Spin!"}
+          {spinning ? "Spinning" : "Spin!"}
         </Button>
       </div>
     </>
