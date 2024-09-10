@@ -119,7 +119,7 @@ function Categories() {
       {allColumnsHaveValues ? null : (
         <p className="col-span-4 text-center">Column(s) cannot be empty</p>
       )}
-      <div className="col-span-4 flex justify-around px-24 gap-48">
+      <div className="col-span-4 flex justify-around px-24 gap-4 lg:gap-48">
         <AddRowButton />
         <Button
           disabled={!allColumnsHaveValues}
@@ -146,7 +146,7 @@ function App() {
   return (
     <UserPreferences>
       <CategoriesProvider>
-        <main className="h-svh w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_minmax(80px,max-content)] grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)] gap-x-4 gap-y-8 p-2">
+        <main className="h-svh w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_minmax(80px,max-content)] grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
           <h1 className="text-3xl font-bold pb-8 col-span-4">
             The Creativator
           </h1>
