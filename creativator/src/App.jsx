@@ -19,14 +19,14 @@ function CategoryTitles() {
         value={category.name}
         key={`category ${i} name`}
         aria-label={`category ${i + 1} name`}
-        className={`col-start-${i + 1} row-start-2`}
+        className={`col-start-${i + 1}`}
         onChange={(e) => renameCategory(i, e.target?.value)}
       />
     ) : (
       <p
         key={`category ${i} name`}
         aria-label={`category ${i + 1} name`}
-        className={`col-start-${i + 1} row-start-2`}
+        className={`col-start-${i + 1}`}
       >
         {category.name}
       </p>
@@ -35,7 +35,7 @@ function CategoryTitles() {
 
   categoryElements.push(
     <Button
-      className="col-start-4 row-start-2"
+      className="col-start-4"
       key="edit-mode"
       onClick={() => setEditMode((e) => !e)}
     >
@@ -102,7 +102,7 @@ function Categories() {
                     aria-label={`row ${i + 1}, column ${j + 1} value`}
                     onChange={(e) => renameValue(j, i, e.target?.value)}
                     className={
-                      choice && choice[j] === i ? "bg-red-600 text-white" : null
+                      choice && choice[j] === i ? "bg-ee-secondary" : null
                     }
                   />
                 </td>
@@ -122,7 +122,9 @@ function Categories() {
         <Button
           disabled={!allColumnsHaveValues || spinning}
           onClick={handler}
-          className={"bg-red-600 hover:bg-red-500 flex-1"}
+          className={
+            "text-dark bg-ee-secondary hover:bg-ee-secondary-light flex-1"
+          }
         >
           {spinning ? "Spinning" : "Spin!"}
         </Button>
@@ -144,13 +146,17 @@ function App() {
   return (
     <UserPreferences>
       <CategoriesProvider>
-        <main className="h-svh w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_min-content] grid-rows-[minmax(16px,max-content)_minmax(16px,max-content)_minmax(160px,80%)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
-          <h1 className="text-3xl font-bold pb-8 col-span-4">
-            The Creativator
-          </h1>
-          <CategoryTitles />
-          <Categories />
-        </main>
+        <div className="h-svh flex flex-col">
+          <header className="flex-none flex gap-4 bg-ee p-4 items-baseline">
+            <h1 className="text-3xl font-bold text-white">The Creativator</h1>
+            <span className="flex-1" />
+            <img src="/ee-logo.svg" className="h-6" />
+          </header>
+          <main className="pt-8 flex-1 w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_min-content] grid-rows-[minmax(16px,max-content)_minmax(160px,80%)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
+            <CategoryTitles />
+            <Categories />
+          </main>
+        </div>
       </CategoriesProvider>
     </UserPreferences>
   );
