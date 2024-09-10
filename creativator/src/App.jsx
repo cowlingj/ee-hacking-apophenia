@@ -119,12 +119,12 @@ function Categories() {
       {allColumnsHaveValues ? null : (
         <p className="col-span-4 text-center">Column(s) cannot be empty</p>
       )}
-      <div className="col-span-4 flex justify-around">
+      <div className="col-span-4 flex justify-around px-24 gap-48">
         <AddRowButton />
         <Button
           disabled={!allColumnsHaveValues}
           onClick={handler}
-          className={"bg-red-600"}
+          className={"bg-red-600 flex-1"}
         >
           {interval ? "Stop" : "Spin!"}
         </Button>
@@ -135,7 +135,11 @@ function Categories() {
 
 function AddRowButton() {
   const { addRow } = useCategories();
-  return <Button onClick={addRow}>Add Row</Button>;
+  return (
+    <Button className="flex-1" onClick={addRow}>
+      Add Row
+    </Button>
+  );
 }
 
 function App() {
