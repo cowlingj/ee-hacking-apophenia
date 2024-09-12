@@ -26,7 +26,7 @@ function CategoryTitles() {
       <p
         key={`category ${i} name`}
         aria-label={`category ${i + 1} name`}
-        className={`col-start-${i + 1}`}
+        className={`col-start-${i + 1} self-baseline text-foreground`}
       >
         {category.name}
       </p>
@@ -35,9 +35,10 @@ function CategoryTitles() {
 
   categoryElements.push(
     <Button
-      className="col-start-4"
+      className="col-start-4 self-baseline"
       key="edit-mode"
       onClick={() => setEditMode((e) => !e)}
+      variant="secondary"
     >
       {editMode ? "Done" : "Edit Categories"}
     </Button>
@@ -57,9 +58,6 @@ function nonEmptyValueIndicies(categories) {
 
 function Categories() {
   const { categories, renameValue, deleteRow } = useCategories();
-  const rows = categories[0].values.map((_, i) =>
-    categories.map((category) => category.values[i])
-  );
 
   const [choice, setChoice] = useState();
   const [spinning, setSpinning] = useState(false);
@@ -91,30 +89,37 @@ function Categories() {
 
   return (
     <>
-      <table className="grid grid-cols-subgrid col-span-4 my-auto h-full">
-        <tbody className="grid grid-cols-subgrid col-span-4 my-auto auto-rows-max overflow-x-hidden overflow-y-scroll h-full">
-          {rows.map((row, i) => (
-            <tr key={`row-${i}`} className="grid grid-cols-subgrid col-span-4">
-              {row.map((cell, j) => (
-                <td key={`cell-${j}`}>
-                  <Input
-                    value={cell}
-                    aria-label={`row ${i + 1}, column ${j + 1} value`}
-                    onChange={(e) => renameValue(j, i, e.target?.value)}
-                    className={
-                      choice && choice[j] === i ? "bg-ee-secondary" : null
-                    }
-                  />
-                </td>
-              ))}
-              <td>
-                <Button onClick={() => deleteRow(i)}>Delete</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {allColumnsHaveValues ? null : (
+      <div className="grid h-full grid-cols-subgrid grid-auto-cols grid-flow-col col-span-4 my-auto h-full overflow-x-hidden overflow-y-scroll gap-y-2 content-start">
+        {categories.flatMap((category, i) =>
+          category.values.map((cell, j) => (
+            <Input
+              key={`category ${i + 1}, row ${j + 1}`}
+              value={cell}
+              aria-label={`row ${i + 1}, column ${j + 1} value`}
+              onChange={(e) => renameValue(i, j, e.target?.value)}
+              className={
+                choice && choice[i] === j
+                  ? `col-start-${i + 1} bg-ee-secondary`
+                  : `col-start-${i + 1}`
+              }
+            />
+          ))
+        )}
+        {categories[0].values.map((_, i) => (
+          <Button
+            variant="ghost"
+            key={`delete row ${i}`}
+            className="col-start-4  text-foreground"
+            onClick={() => deleteRow(i)}
+          >
+            Delete
+          </Button>
+        ))}
+      </div>
+
+      {allColumnsHaveValues ? (
+        <span className="col-span-4" />
+      ) : (
         <p className="col-span-4 text-center">Column(s) cannot be empty</p>
       )}
       <div className="col-span-4 flex justify-around px-24 gap-4 lg:gap-48">
@@ -122,9 +127,7 @@ function Categories() {
         <Button
           disabled={!allColumnsHaveValues || spinning}
           onClick={handler}
-          className={
-            "text-dark bg-ee-secondary hover:bg-ee-secondary-light flex-1"
-          }
+          className="bg-accent hover:bg-accent/80 text-accent-foreground flex-1"
         >
           {spinning ? "Spinning" : "Spin!"}
         </Button>
@@ -136,7 +139,7 @@ function Categories() {
 function AddRowButton() {
   const { addRow } = useCategories();
   return (
-    <Button className="flex-1" onClick={addRow}>
+    <Button className="flex-1" onClick={addRow} variant="secondary">
       Add Row
     </Button>
   );
@@ -147,12 +150,12 @@ function App() {
     <UserPreferences>
       <CategoriesProvider>
         <div className="h-svh flex flex-col">
-          <header className="flex-none flex gap-4 bg-ee p-4 items-baseline">
+          <header className="flex-none flex gap-4 bg-primary p-4 items-baseline">
             <h1 className="text-3xl font-bold text-white">The Creativator</h1>
             <span className="flex-1" />
             <img src="/ee-logo.svg" className="h-6" />
           </header>
-          <main className="pt-8 flex-1 w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_min-content] grid-rows-[minmax(16px,max-content)_minmax(160px,80%)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
+          <main className="overflow-hidden pt-8 flex-1 w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_min-content] grid-rows-[minmax(16px,max-content)_minmax(160px,80%)] auto-rows-[minmax(24px,max-content)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
             <CategoryTitles />
             <Categories />
           </main>
