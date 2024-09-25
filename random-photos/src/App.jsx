@@ -23,11 +23,7 @@ function ImageAsset({ imageKey }) {
     return <p>loading...</p>;
   }
 
-  return (
-    <div className="bg-slate-200 flex justify-center content-center">
-      <img src={src} />
-    </div>
-  );
+  return <img src={src} />;
 }
 
 ImageAsset.propTypes = {
@@ -105,7 +101,7 @@ function shuffle(array) {
 function App() {
   const [count, setCount] = useState(0);
   const [imageKeys, setImageKeys] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(0);
   const dialogTrigger = useRef();
 
   useEffect(() => {
@@ -122,6 +118,28 @@ function App() {
             dialogTrigger.current.focus();
           }
         }}
+        onKeyUp={(e) => {
+          switch (e.code) {
+            case "ArrowRight":
+            case "Space":
+            case "Enter":
+              setSelectedImage((selectedImage + 1) % imageKeys.length);
+              break;
+            case "ArrowLeft":
+              setSelectedImage(
+                (imageKeys.length + selectedImage - 1) % imageKeys.length
+              );
+              break;
+            case "Tab": {
+              const direction = e.shiftKey ? -1 : 1;
+              setSelectedImage(
+                (imageKeys.length + selectedImage + direction) %
+                  imageKeys.length
+              );
+              break;
+            }
+          }
+        }}
       >
         <VisuallyHidden asChild>
           <DialogTitle>Viewing Image</DialogTitle>
@@ -130,7 +148,7 @@ function App() {
           <DialogDescription>Viewing image in focus mode</DialogDescription>
         </VisuallyHidden>
         {selectedImage !== null ? (
-          <ImageAsset imageKey={selectedImage} />
+          <ImageAsset imageKey={imageKeys[selectedImage]} />
         ) : (
           "loading..."
         )}
@@ -146,12 +164,12 @@ function App() {
       {count !== 0 ? (
         <>
           <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
-            {imageKeys.map((k) => (
+            {imageKeys.map((k, i) => (
               <DialogTrigger key={k} asChild>
                 <button
                   onClick={(e) => {
                     dialogTrigger.current = e.currentTarget;
-                    setSelectedImage(k);
+                    setSelectedImage(i);
                   }}
                 >
                   <ImageAsset imageKey={k} />
