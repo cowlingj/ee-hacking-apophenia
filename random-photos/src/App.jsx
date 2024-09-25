@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PropTypes } from "prop-types";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "./components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const images = import.meta.glob(["./assets/images/*.jpg"]);
 
@@ -22,6 +29,10 @@ function ImageAsset({ imageKey }) {
   );
 }
 
+ImageAsset.propTypes = {
+  imageKey: PropTypes.string.isRequired,
+};
+
 function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   return (
     <Button
@@ -35,16 +46,32 @@ function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   );
 }
 
+NumberButton.propTypes = {
+  n: PropTypes.number,
+  setCount: PropTypes.func.isRequired,
+  children: PropTypes.node,
+  max: PropTypes.number,
+};
+
 const buttonLabels = ["One", "Two", "Three", "Four", "Five"];
 function ButtonPanel({ setCount }) {
   const buttons = buttonLabels.map((label, i) => (
-    <NumberButton key={label} n={i + 1} setCount={setCount}>
+    <NumberButton
+      key={label}
+      n={i + 1}
+      setCount={setCount}
+      className="bg-secondary hover:bg-secondary/90"
+    >
       {label}
     </NumberButton>
   ));
 
   buttons.push(
-    <NumberButton key={"surprise"} setCount={setCount}>
+    <NumberButton
+      key={"surprise"}
+      setCount={setCount}
+      className="text-foreground bg-accent hover:bg-accent/90"
+    >
       Surprise Me!
     </NumberButton>
   );
@@ -77,13 +104,24 @@ function shuffle(array) {
 function App() {
   const [count, setCount] = useState(0);
   const [imageKeys, setImageKeys] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     setImageKeys(shuffle(Object.keys(images)).slice(0, count));
   }, [count, setImageKeys]);
 
   return (
-    <>
+    <Dialog>
+      <DialogContent className="p-0">
+        <VisuallyHidden asChild>
+          <DialogTitle>Viewing Image</DialogTitle>
+        </VisuallyHidden>
+        {selectedImage !== null ? (
+          <ImageAsset imageKey={selectedImage} />
+        ) : (
+          "loading..."
+        )}
+      </DialogContent>
       <header className="flex-none flex gap-4 bg-primary p-4 items-baseline">
         <h1 className="text-3xl font-bold text-white">Random Photos</h1>
         <span className="flex-1" />
@@ -95,24 +133,26 @@ function App() {
       {count !== 0 ? (
         <>
           <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
-            {imageKeys.map((i) => (
-              <ImageAsset key={i} imageKey={i} />
+            {imageKeys.map((k) => (
+              <DialogTrigger key={k} asChild>
+                <div onClick={() => setSelectedImage(k)}>
+                  <ImageAsset imageKey={k} />
+                </div>
+              </DialogTrigger>
             ))}
           </main>
           <aside className="col-span-full flex justify-center px-4 pb-4">
             <NumberButton
               n={0}
-              setCount={(i) => {
-                setCount(i);
-                setImageKeys([]);
-              }}
+              setCount={setCount}
+              className="text-foreground bg-accent hover:bg-accent/90"
             >
               Play Again
             </NumberButton>
           </aside>
         </>
       ) : null}
-    </>
+    </Dialog>
   );
 }
 
