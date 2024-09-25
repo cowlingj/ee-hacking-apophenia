@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PropTypes } from "prop-types";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from "./components/ui/dialog";
@@ -105,6 +106,7 @@ function App() {
   const [count, setCount] = useState(0);
   const [imageKeys, setImageKeys] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const dialogTrigger = useRef();
 
   useEffect(() => {
     setImageKeys(shuffle(Object.keys(images)).slice(0, count));
@@ -112,9 +114,20 @@ function App() {
 
   return (
     <Dialog>
-      <DialogContent className="p-0">
+      <DialogContent
+        className="p-0"
+        onCloseAutoFocus={(event) => {
+          if (dialogTrigger.current) {
+            event.preventDefault();
+            dialogTrigger.current.focus();
+          }
+        }}
+      >
         <VisuallyHidden asChild>
           <DialogTitle>Viewing Image</DialogTitle>
+        </VisuallyHidden>
+        <VisuallyHidden asChild>
+          <DialogDescription>Viewing image in focus mode</DialogDescription>
         </VisuallyHidden>
         {selectedImage !== null ? (
           <ImageAsset imageKey={selectedImage} />
@@ -135,9 +148,14 @@ function App() {
           <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
             {imageKeys.map((k) => (
               <DialogTrigger key={k} asChild>
-                <div onClick={() => setSelectedImage(k)}>
+                <button
+                  onClick={(e) => {
+                    dialogTrigger.current = e.currentTarget;
+                    setSelectedImage(k);
+                  }}
+                >
                   <ImageAsset imageKey={k} />
-                </div>
+                </button>
               </DialogTrigger>
             ))}
           </main>
