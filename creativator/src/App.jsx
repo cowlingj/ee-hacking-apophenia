@@ -60,6 +60,7 @@ function Categories() {
   const { categories, renameValue, deleteRow } = useCategories();
 
   const [choice, setChoice] = useState();
+  const [previousChoice, setPreviousChoice] = useState();
   const [spinning, setSpinning] = useState(false);
 
   useEffect(() => {
@@ -82,6 +83,30 @@ function Categories() {
     setSpinning(true);
     setTimeout(() => setSpinning(false), SHUFFLE_DURATION);
   };
+
+  useEffect(() => {
+    if (spinning) {
+      return;
+    }
+    const options = nonEmptyValueIndicies(categories);
+
+    // reduce the likelihood of the same spin twice
+    // 1/p -> 1/p^retries
+    const retries = 10;
+    let currentChoice = choice;
+    for (let i = 0; i < retries; i++) {
+      if (JSON.stringify(previousChoice) === JSON.stringify(currentChoice)) {
+        console.log("different choice");
+        break;
+      }
+      console.log("same choice");
+      currentChoice = options.map(
+        (values) => values[Math.floor(Math.random() * values.length)]
+      );
+    }
+    setChoice(currentChoice);
+    setPreviousChoice(currentChoice);
+  }, [spinning, categories, choice, previousChoice]);
 
   const allColumnsHaveValues = nonEmptyValueIndicies(categories).every(
     (values) => values.length > 0
