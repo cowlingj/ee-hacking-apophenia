@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CategoriesProvider } from "./categories/CategoriesContext";
 import { useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
@@ -47,6 +47,12 @@ function CategoryTitles() {
   return categoryElements;
 }
 
+/**
+ *
+ * @param {import("./categories/useCategories").Category[]} categories
+ * @returns {number[][]}
+ */
+
 function nonEmptyValueIndicies(categories) {
   return categories.map((category) =>
     category.values
@@ -56,57 +62,120 @@ function nonEmptyValueIndicies(categories) {
   );
 }
 
+// Fisher-Yates shuffle
+// https://www.freecodecamp.org/news/how-to-shuffle-an-array-of-items-using-javascript-or-typescript/
+/**
+ * @template T
+ * @param {T[]} array
+ * @returns {T[]}
+ */
+function shuffle(array) {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function arrayEquals(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return false;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return a.every((value, index) => value === b[index]);
+}
+
+/**
+ *
+ * @param {import("./categories/useCategories").Category[]} categories
+ * @param {number[][] | undefined} filters
+ * @returns {number[][]}
+ */
+function toChoices(categories, filters = []) {
+  const [first, ...rest] = categories;
+
+  if (!first) {
+    return [];
+  }
+
+  /** @type {[string, number][][]} */
+  const cartesianProduct = rest.reduce(
+    (/** @type {[string, number][][]} */ prev, cur) =>
+      cur.values.flatMap((v, i) => prev.map((row) => [...row, [v, i]])),
+    first.values.map((v, i) => [[v, i]])
+  );
+
+  return cartesianProduct
+    .filter(
+      (row) => row.every(([value]) => value) // remove combinations with empty strings
+    )
+    .map(
+      (row) => row.map(([, i]) => i) // get indecies
+    )
+    .filter(
+      (row) => !filters.some((filter) => arrayEquals(filter, row)) // remove rows matching filters
+    );
+}
+
 function Categories() {
   const { categories, renameValue, deleteRow } = useCategories();
-
-  const [choice, setChoice] = useState();
-  const [previousChoice, setPreviousChoice] = useState();
+  const [choice, setChoice] = useState({ index: undefined, value: undefined });
+  const [previousChoice, setPreviousChoice] = useState({
+    index: undefined,
+    value: undefined,
+  });
   const [spinning, setSpinning] = useState(false);
 
+  const choices = useMemo(
+    () =>
+      shuffle(
+        toChoices(
+          categories,
+          previousChoice.value ? [previousChoice.value] : []
+        )
+      ),
+    [categories, previousChoice]
+  );
+
+  // if spinning set choices randomly
   useEffect(() => {
     if (!spinning) {
       return;
     }
 
     const interval = window.setInterval(() => {
-      setChoice(
-        nonEmptyValueIndicies(categories).map(
-          (values) => values[Math.floor(Math.random() * values.length)]
-        )
-      );
+      if (choices.length === 0) {
+        return;
+      }
+      setChoice(({ index }) => {
+        const newIndex = index !== undefined ? (index + 1) % choices.length : 0;
+        return {
+          index: newIndex,
+          value: choices[newIndex],
+        };
+      });
     }, SHUFFLE_SPEED);
 
-    return () => clearInterval(interval);
-  }, [categories, spinning]);
+    return () => {
+      clearInterval(interval);
+      if (choices.length === 0) {
+        return;
+      }
+      const i = Math.floor(Math.random() * choices.length);
+      setChoice({ index: i, value: choices[i] });
+      setPreviousChoice({ index: i, value: choices[i] });
+    };
+  }, [choices, spinning]);
 
   const handler = () => {
     setSpinning(true);
     setTimeout(() => setSpinning(false), SHUFFLE_DURATION);
   };
-
-  useEffect(() => {
-    if (spinning) {
-      return;
-    }
-    const options = nonEmptyValueIndicies(categories);
-
-    // reduce the likelihood of the same spin twice
-    // 1/p -> 1/p^retries
-    const retries = 10;
-    let currentChoice = choice;
-    for (let i = 0; i < retries; i++) {
-      if (JSON.stringify(previousChoice) === JSON.stringify(currentChoice)) {
-        console.log("different choice");
-        break;
-      }
-      console.log("same choice");
-      currentChoice = options.map(
-        (values) => values[Math.floor(Math.random() * values.length)]
-      );
-    }
-    setChoice(currentChoice);
-    setPreviousChoice(currentChoice);
-  }, [spinning, categories, choice, previousChoice]);
 
   const allColumnsHaveValues = nonEmptyValueIndicies(categories).every(
     (values) => values.length > 0
@@ -123,7 +192,7 @@ function Categories() {
               aria-label={`row ${i + 1}, column ${j + 1} value`}
               onChange={(e) => renameValue(i, j, e.target?.value)}
               className={
-                choice && choice[i] === j
+                choice.value && choice.value[i] === j
                   ? `col-start-${i + 1} bg-ee-secondary`
                   : `col-start-${i + 1}`
               }
