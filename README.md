@@ -2,7 +2,7 @@
 
 React applications to help people utilize their apophenia to come up with ideas.
 
-## Installation
+## Installation & Running
 
 The project uses [devcontainers](https://containers.dev/) to provide a consistent development environment
 
@@ -10,6 +10,17 @@ The project uses [devcontainers](https://containers.dev/) to provide a consisten
   cd "<application>"
   npm install
   npm run dev
+```
+
+### Preview Mode
+
+To preview a build (i.e. build and run locally in a production mode without features like HMR)
+use the following commands
+
+```sh
+  cd "<application>"
+  npm run build
+  npm run preview
 ```
 
 ## About the stack
