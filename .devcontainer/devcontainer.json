@@ -27,5 +27,14 @@
   },
   "features": {
     "./features/vercel": {}
+  },
+  "forwardPorts": [4173, 5173],
+  "portsAttributes": {
+    "4173": {
+      "label": "Preview"
+    },
+    "5173": {
+      "label": "Dev"
+    }
   }
 }

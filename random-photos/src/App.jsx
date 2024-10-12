@@ -10,26 +10,6 @@ import {
 } from "./components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-const images = import.meta.glob(["./assets/images/*.jpg"]);
-
-function ImageAsset({ imageKey }) {
-  const [src, setSrc] = useState(null);
-
-  useEffect(() => {
-    images[imageKey]().then((module) => setSrc(module.default));
-  }, [setSrc, imageKey]);
-
-  if (src === null) {
-    return <p>loading...</p>;
-  }
-
-  return <img src={src} />;
-}
-
-ImageAsset.propTypes = {
-  imageKey: PropTypes.string.isRequired,
-};
-
 function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   return (
     <Button
@@ -105,7 +85,7 @@ function App() {
   const dialogTrigger = useRef();
 
   useEffect(() => {
-    setImageKeys(shuffle(Object.keys(images)).slice(0, count));
+    setImageKeys(shuffle(CONFIG_IMAGES).slice(0, count));
   }, [count, setImageKeys]);
 
   return (
@@ -148,7 +128,7 @@ function App() {
           <DialogDescription>Viewing image in focus mode</DialogDescription>
         </VisuallyHidden>
         {selectedImage !== null ? (
-          <ImageAsset imageKey={imageKeys[selectedImage]} />
+          <img src={imageKeys[selectedImage]} />
         ) : (
           "loading..."
         )}
@@ -164,15 +144,15 @@ function App() {
       {count !== 0 ? (
         <>
           <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
-            {imageKeys.map((k, i) => (
-              <DialogTrigger key={k} asChild>
+            {imageKeys.map((src, i) => (
+              <DialogTrigger key={src} asChild>
                 <button
                   onClick={(e) => {
                     dialogTrigger.current = e.currentTarget;
                     setSelectedImage(i);
                   }}
                 >
-                  <ImageAsset imageKey={k} />
+                  <img src={src} />
                 </button>
               </DialogTrigger>
             ))}
