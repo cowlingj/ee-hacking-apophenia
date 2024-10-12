@@ -47,7 +47,7 @@ function App() {
                   className="m-auto row-start-1 col-start-1 peer"
                 />
                 {flipped[i] ? null : (
-                  <p className="md:opacity-0 peer-hover:opacity-100 row-start-1 col-start-1 m-2 text-foreground bg-accent rounded">
+                  <p className="md:opacity-0 peer-hover:opacity-100 hover:opacity-100 row-start-1 col-start-1 m-2 text-foreground bg-accent rounded">
                     Turn
                   </p>
                 )}
