@@ -137,7 +137,7 @@ function App() {
       <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
         <h1 className="text-3xl font-bold">Random Photos</h1>
         <span className="flex-1" />
-        <a href="https://equalexperts.co.uk">
+        <a href="https://equalexperts.com">
           <img src="/ee-logo.svg" className="h-6" />
         </a>
         <a href="#">
