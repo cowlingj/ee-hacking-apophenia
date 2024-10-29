@@ -4,6 +4,7 @@ import { useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
 import { Button } from "@/components/ui/button";
 import { Input } from "./components/ui/input";
+import { BadgeHelp } from "lucide-react";
 
 const SHUFFLE_SPEED = 200;
 const SHUFFLE_DURATION = 3000;
@@ -244,10 +245,15 @@ function App() {
     <UserPreferences>
       <CategoriesProvider>
         <div className="h-svh flex flex-col">
-          <header className="flex-none flex gap-4 bg-primary p-4 items-baseline">
-            <h1 className="text-3xl font-bold text-white">The Creativator</h1>
+          <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
+            <h1 className="text-3xl font-bold">The Creativator</h1>
             <span className="flex-1" />
-            <img src="/ee-logo.svg" className="h-6" />
+            <a href="https://equalexperts.com">
+              <img src="/ee-logo.svg" className="h-6" />
+            </a>
+            <a href="#">
+              <BadgeHelp />
+            </a>
           </header>
           <main className="overflow-hidden pt-8 flex-1 w-dwh grid grid-cols-4 grid-cols-[1fr_1fr_1fr_min-content] grid-rows-[minmax(16px,max-content)_minmax(160px,80%)] auto-rows-[minmax(24px,max-content)] gap-x-2 lg:gap-x-4 gap-y-8 p-2">
             <CategoryTitles />

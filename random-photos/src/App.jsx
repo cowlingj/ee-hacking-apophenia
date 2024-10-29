@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "./components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { BadgeHelp } from "lucide-react";
 
 function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   return (
@@ -133,10 +134,15 @@ function App() {
           "loading..."
         )}
       </DialogContent>
-      <header className="flex-none flex gap-4 bg-primary p-4 items-baseline">
-        <h1 className="text-3xl font-bold text-white">Random Photos</h1>
+      <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
+        <h1 className="text-3xl font-bold">Random Photos</h1>
         <span className="flex-1" />
-        <img src="/ee-logo.svg" className="h-6" />
+        <a href="https://equalexperts.co.uk">
+          <img src="/ee-logo.svg" className="h-6" />
+        </a>
+        <a href="#">
+          <BadgeHelp />
+        </a>
       </header>
       {count === 0 ? <ButtonPanel setCount={setCount} /> : null}
       <br />

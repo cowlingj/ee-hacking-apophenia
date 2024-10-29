@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { BadgeHelp } from "lucide-react";
 
 // Fisher-Yates shuffle
 // https://www.freecodecamp.org/news/how-to-shuffle-an-array-of-items-using-javascript-or-typescript/
@@ -21,10 +22,15 @@ function App() {
 
   return (
     <div className="w-full flex gap-4 flex-col">
-      <header className="flex-none flex gap-4 bg-primary p-4 items-baseline">
-        <h1 className="text-3xl font-bold text-white">Business Meerkat</h1>
+      <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
+        <h1 className="text-3xl font-bold">Business Meerkat</h1>
         <span className="flex-1" />
-        <img src="/ee-logo.svg" className="h-6" />
+        <a href="https://equalexperts.co.uk">
+          <img src="/ee-logo.svg" className="h-6" />
+        </a>
+        <a href="#">
+          <BadgeHelp />
+        </a>
       </header>
       <main className="grid grid-cols-3 justify-items-center gap-4 p-4 flex-auto grid-rows-[max-content_1fr_max-content]">
         {dealt ? (
