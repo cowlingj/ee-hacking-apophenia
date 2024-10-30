@@ -140,7 +140,7 @@ function App() {
         <a href="https://equalexperts.com">
           <img src="/ee-logo.svg" className="h-6" />
         </a>
-        <a href="#">
+        <a href="https://youtu.be/SOn9RWv5Kpk">
           <BadgeHelp />
         </a>
       </header>
