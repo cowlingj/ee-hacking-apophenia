@@ -7,6 +7,15 @@ import { createContext, useContext } from "react";
  * @property {string[]} values
  */
 
+/**
+ * @type {Category[]}
+ */
+export const DEFAULT_CATEGORIES = [
+  { name: "Category 1", values: [] },
+  { name: "Category 2", values: [] },
+  { name: "Category 3", values: [] },
+];
+
 export const CategoryContext = createContext({
   categories: [],
   setCategories: () => {},
@@ -88,11 +97,16 @@ export function useCategories() {
     });
   };
 
+  const reset = () => {
+    setCategories(DEFAULT_CATEGORIES);
+  };
+
   return {
     addRow,
     deleteRow,
     categories,
     renameCategory,
     renameValue,
+    reset,
   };
 }

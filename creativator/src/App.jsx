@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { CategoriesProvider } from "./categories/CategoriesContext";
-import { useCategories } from "./categories/useCategories";
+import { DEFAULT_CATEGORIES, useCategories } from "./categories/useCategories";
 import { UserPreferences } from "./preferences/UserPreferences";
 import { Button } from "@/components/ui/button";
 import { Input } from "./components/ui/input";
@@ -124,7 +124,7 @@ function toChoices(categories, filters = []) {
 }
 
 function Categories() {
-  const { categories, renameValue, deleteRow } = useCategories();
+  const { categories, renameValue, deleteRow, reset } = useCategories();
   const [choice, setChoice] = useState({ index: undefined, value: undefined });
   const [previousChoice, setPreviousChoice] = useState({
     index: undefined,
@@ -222,9 +222,19 @@ function Categories() {
         <Button
           disabled={!allColumnsHaveValues || spinning}
           onClick={handler}
-          className="bg-accent hover:bg-accent/80 text-accent-foreground flex-1"
+          className="bg-accent hover:bg-accent/80 text-accent-foreground flex-1 flex-grow-[2]"
         >
           {spinning ? "Spinning" : "Spin!"}
+        </Button>
+        <Button
+          disabled={
+            JSON.stringify(categories) === JSON.stringify(DEFAULT_CATEGORIES)
+          }
+          onClick={reset}
+          variant="secondary"
+          className="flex-1"
+        >
+          Reset
         </Button>
       </div>
     </>
