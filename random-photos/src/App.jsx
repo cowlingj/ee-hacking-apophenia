@@ -10,6 +10,7 @@ import {
 } from "./components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { BadgeHelp } from "lucide-react";
+import { Analytics } from "@vercel/analytics/react";
 
 function NumberButton({ n, setCount, children, max = 5, ...rest }) {
   return (
@@ -90,91 +91,94 @@ function App() {
   }, [count, setImageKeys]);
 
   return (
-    <Dialog>
-      <DialogContent
-        className="p-0"
-        onCloseAutoFocus={(event) => {
-          if (dialogTrigger.current) {
-            event.preventDefault();
-            dialogTrigger.current.focus();
-          }
-        }}
-        onKeyUp={(e) => {
-          switch (e.code) {
-            case "ArrowRight":
-            case "Space":
-            case "Enter":
-              setSelectedImage((selectedImage + 1) % imageKeys.length);
-              break;
-            case "ArrowLeft":
-              setSelectedImage(
-                (imageKeys.length + selectedImage - 1) % imageKeys.length
-              );
-              break;
-            case "Tab": {
-              const direction = e.shiftKey ? -1 : 1;
-              setSelectedImage(
-                (imageKeys.length + selectedImage + direction) %
-                  imageKeys.length
-              );
-              break;
+    <>
+      <Analytics />
+      <Dialog>
+        <DialogContent
+          className="p-0"
+          onCloseAutoFocus={(event) => {
+            if (dialogTrigger.current) {
+              event.preventDefault();
+              dialogTrigger.current.focus();
             }
-          }
-        }}
-      >
-        <VisuallyHidden asChild>
-          <DialogTitle>Viewing Image</DialogTitle>
-        </VisuallyHidden>
-        <VisuallyHidden asChild>
-          <DialogDescription>Viewing image in focus mode</DialogDescription>
-        </VisuallyHidden>
-        {selectedImage !== null ? (
-          <img src={imageKeys[selectedImage]} />
-        ) : (
-          "loading..."
-        )}
-      </DialogContent>
-      <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
-        <h1 className="text-3xl font-bold">Random Photos</h1>
-        <span className="flex-1" />
-        <a href="https://equalexperts.com">
-          <img src="/ee-logo.svg" className="h-6" />
-        </a>
-        <a href="https://youtu.be/SOn9RWv5Kpk">
-          <BadgeHelp />
-        </a>
-      </header>
-      {count === 0 ? <ButtonPanel setCount={setCount} /> : null}
-      <br />
+          }}
+          onKeyUp={(e) => {
+            switch (e.code) {
+              case "ArrowRight":
+              case "Space":
+              case "Enter":
+                setSelectedImage((selectedImage + 1) % imageKeys.length);
+                break;
+              case "ArrowLeft":
+                setSelectedImage(
+                  (imageKeys.length + selectedImage - 1) % imageKeys.length
+                );
+                break;
+              case "Tab": {
+                const direction = e.shiftKey ? -1 : 1;
+                setSelectedImage(
+                  (imageKeys.length + selectedImage + direction) %
+                    imageKeys.length
+                );
+                break;
+              }
+            }
+          }}
+        >
+          <VisuallyHidden asChild>
+            <DialogTitle>Viewing Image</DialogTitle>
+          </VisuallyHidden>
+          <VisuallyHidden asChild>
+            <DialogDescription>Viewing image in focus mode</DialogDescription>
+          </VisuallyHidden>
+          {selectedImage !== null ? (
+            <img src={imageKeys[selectedImage]} />
+          ) : (
+            "loading..."
+          )}
+        </DialogContent>
+        <header className="flex-none flex gap-4 bg-primary text-white p-4 items-baseline">
+          <h1 className="text-3xl font-bold">Random Photos</h1>
+          <span className="flex-1" />
+          <a href="https://equalexperts.com">
+            <img src="/ee-logo.svg" className="h-6" />
+          </a>
+          <a href="https://youtu.be/SOn9RWv5Kpk">
+            <BadgeHelp />
+          </a>
+        </header>
+        {count === 0 ? <ButtonPanel setCount={setCount} /> : null}
+        <br />
 
-      {count !== 0 ? (
-        <>
-          <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
-            {imageKeys.map((src, i) => (
-              <DialogTrigger key={src} asChild>
-                <button
-                  onClick={(e) => {
-                    dialogTrigger.current = e.currentTarget;
-                    setSelectedImage(i);
-                  }}
-                >
-                  <img src={src} />
-                </button>
-              </DialogTrigger>
-            ))}
-          </main>
-          <aside className="col-span-full flex justify-center px-4 pb-4">
-            <NumberButton
-              n={0}
-              setCount={setCount}
-              className="text-foreground bg-accent hover:bg-accent/90"
-            >
-              Play Again
-            </NumberButton>
-          </aside>
-        </>
-      ) : null}
-    </Dialog>
+        {count !== 0 ? (
+          <>
+            <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-items-strech align-items-strech">
+              {imageKeys.map((src, i) => (
+                <DialogTrigger key={src} asChild>
+                  <button
+                    onClick={(e) => {
+                      dialogTrigger.current = e.currentTarget;
+                      setSelectedImage(i);
+                    }}
+                  >
+                    <img src={src} />
+                  </button>
+                </DialogTrigger>
+              ))}
+            </main>
+            <aside className="col-span-full flex justify-center px-4 pb-4">
+              <NumberButton
+                n={0}
+                setCount={setCount}
+                className="text-foreground bg-accent hover:bg-accent/90"
+              >
+                Play Again
+              </NumberButton>
+            </aside>
+          </>
+        ) : null}
+      </Dialog>
+    </>
   );
 }
 
